@@ -25,8 +25,8 @@ jobs:
         run: |
           echo 'begining'
           S=$(curl 'https://v1.hitokoto.cn/?c=a&encode=text')
-          git config --local user.email "misakafs@gmail.com"
-          git config --local user.name "lhlyu"
+          git config --local user.email "2176978853@qq.com"
+          git config --local user.name "somewan820"
           git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git pull --rebase
           git commit --allow-empty -m "${S}"
