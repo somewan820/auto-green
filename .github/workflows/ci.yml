@@ -1,34 +1,36 @@
-name: ci
+name: auto-green
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
   schedule:
-    - cron: "0 */3 * * *"
+    - cron: "17 */3 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-green-${{ github.repository }}
+  cancel-in-progress: false
 
 jobs:
   autogreen:
     runs-on: ubuntu-latest
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
 
-      - name: Random Execute
+      - name: Configure Git
         run: |
-          R=$RANDOM
-          M=20000
-          echo $R
-          if [ $R -lt $M ];then exit 1;fi
+          git config user.email "2176978853@qq.com"
+          git config user.name "somewan820"
 
-      - name: Auto green
+      - name: Create and push empty commit
+        env:
+          TARGET_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
-          echo 'begining'
-          S=$(curl 'https://v1.hitokoto.cn/?c=a&encode=text')
-          git config --local user.email "2176978853@qq.com"
-          git config --local user.name "somewan820"
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git pull --rebase
-          git commit --allow-empty -m "${S}"
-          git push
-          echo 'end'
+          timestamp="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          git commit --allow-empty -m "chore: auto green ${timestamp}"
+          git push origin HEAD:"${TARGET_BRANCH}"
