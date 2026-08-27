@@ -31,6 +31,26 @@ jobs:
         env:
           TARGET_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
-          timestamp="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-          git commit --allow-empty -m "chore: auto green ${timestamp}"
+          quote_url="https://v1.hitokoto.cn/?c=i&c=k&encode=text"
+          if ! quote="$(curl --fail --silent --show-error --location \
+            --retry 3 --retry-delay 2 --connect-timeout 10 --max-time 30 \
+            "$quote_url")"; then
+            quote=""
+          fi
+
+          quote="$(printf '%s' "$quote" | tr '\r\n' ' ' | sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//')"
+          if [[ -z "$quote" ]]; then
+            fallback_quotes=(
+              "路虽远，行则将至；事虽难，做则必成。"
+              "心之所向，素履以往。"
+              "日拱一卒，功不唐捐。"
+              "但行好事，莫问前程。"
+              "方向对了，慢一点也是前进。"
+            )
+            quote="${fallback_quotes[RANDOM % ${#fallback_quotes[@]}]}"
+            echo "Quote API unavailable; using a random fallback."
+          fi
+
+          echo "Commit quote: $quote"
+          git commit --allow-empty -m "$quote"
           git push origin HEAD:"${TARGET_BRANCH}"

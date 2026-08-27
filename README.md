@@ -1,24 +1,20 @@
 # auto-green
 
-用 GitHub Actions 定时创建空提交，保持默认分支的提交活跃度。
+通过 GitHub Actions 定时创建空提交，并使用随机语录作为提交信息。
 
-## 当前配置
+## 功能
 
-- 触发方式：`schedule` + `workflow_dispatch`
-- 定时表达式：`17 */3 * * *`（UTC，每 3 小时一次，避开整点高峰）
-- 目标分支：仓库默认分支
-- 提交方式：创建空提交并直接推送到默认分支
+- 每 3 小时自动运行一次，也支持在 Actions 页面手动触发。
+- 从[一言](https://hitokoto.cn/)实时获取随机诗词或哲理语录。
+- 将语录作为提交标题，推送到仓库默认分支。
+- 接口不可用时自动重试，并随机使用本地兜底文案。
 
-## 为什么之前不稳定
+## 使用方法
 
-- 原工作流缺少显式 `contents: write` 权限，推送容易被权限限制拦住。
-- 原流程带了 `Random Execute`，会故意让大量运行直接失败。
-- 原流程依赖外部语录接口生成提交信息，外部请求失败时整条链路也会失败。
-- 原定时写在整点，GitHub Actions 在整点高峰更容易出现延迟。
+1. Fork 本仓库。
+2. 打开 `.github/workflows/ci.yml`，将 `user.name` 和 `user.email` 修改为自己的 GitHub 用户名和已验证邮箱。
+3. 在仓库 **Settings -> Actions -> General -> Workflow permissions** 中选择 **Read and write permissions**。
+4. 打开仓库 **Actions** 页面，启用工作流。
+5. 选择 **auto-green -> Run workflow** 手动运行一次，确认能够正常提交。
 
-## 使用前检查
-
-- 确认仓库已启用 GitHub Actions。
-- 确认提交邮箱 `2176978853@qq.com` 已绑定并验证到你的 GitHub 账号，否则提交可能不会计入贡献图。
-- 如果仓库的定时工作流曾长期无活动，被 GitHub 自动暂停后，需要在 Actions 页面重新启用。
-
+完成后，工作流会每 3 小时自动执行。GitHub 若暂停了长期无活动仓库的定时任务，需要在 Actions 页面重新启用。
