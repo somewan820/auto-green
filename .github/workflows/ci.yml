@@ -1,4 +1,4 @@
-name: auto-green
+name: GitPoet
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: auto-green-${{ github.repository }}
+  group: git-poet-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:

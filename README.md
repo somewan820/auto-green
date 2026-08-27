@@ -1,4 +1,4 @@
-# auto-green
+# GitPoet
 
 通过 GitHub Actions 定时创建空提交，并使用随机语录作为提交信息。
 
@@ -15,6 +15,6 @@
 2. 打开 `.github/workflows/ci.yml`，将 `user.name` 和 `user.email` 修改为自己的 GitHub 用户名和已验证邮箱。
 3. 在仓库 **Settings -> Actions -> General -> Workflow permissions** 中选择 **Read and write permissions**。
 4. 打开仓库 **Actions** 页面，启用工作流。
-5. 选择 **auto-green -> Run workflow** 手动运行一次，确认能够正常提交。
+5. 选择 **GitPoet -> Run workflow** 手动运行一次，确认能够正常提交。
 
 完成后，工作流会每 3 小时自动执行。GitHub 若暂停了长期无活动仓库的定时任务，需要在 Actions 页面重新启用。
